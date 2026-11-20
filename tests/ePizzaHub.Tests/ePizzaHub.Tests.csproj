@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ePizzaHub.Web\ePizzaHub.Web.csproj" />
+    <ProjectReference Include="..\..\src\ePizzaHub.Api\ePizzaHub.Api.csproj" />
   </ItemGroup>
 
 </Project>

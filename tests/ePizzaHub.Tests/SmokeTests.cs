@@ -3,7 +3,7 @@ namespace ePizzaHub.Tests;
 public class SmokeTests
 {
     [Fact]
-    public void Solution_Builds_And_Tests_Run()
+    public void Placeholder_Test_Runs()
     {
         Assert.True(true);
     }

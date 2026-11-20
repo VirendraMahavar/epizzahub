@@ -480,3 +480,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Client build output (generated)
+src/ePizzaHub.Api/wwwroot/
+node_modules/
