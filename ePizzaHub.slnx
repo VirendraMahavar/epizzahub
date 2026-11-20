@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ePizzaHub.Web/ePizzaHub.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ePizzaHub.Tests/ePizzaHub.Tests.csproj" />
+  </Folder>
+</Solution>
