@@ -1,0 +1,70 @@
+name: ci-cd
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/ePizzaHub.Client/package-lock.json
+
+      - name: Build React client
+        working-directory: src/ePizzaHub.Client
+        run: |
+          npm ci
+          npm run lint --if-present
+          npm run build
+
+      - name: Restore, build, test API
+        run: |
+          dotnet restore
+          dotnet build -c Release --no-restore
+          dotnet test -c Release --no-build
+
+      - name: Publish
+        run: dotnet publish src/ePizzaHub.Api -c Release --no-build -o publish
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: publish
+
+  deploy-dev:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: publish
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - uses: azure/webapps-deploy@v3
+        with:
+          app-name: app-epizzahub-dev-83
+          package: publish
